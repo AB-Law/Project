@@ -3,8 +3,8 @@ import pyaudio
 import pyttsx3
 engine = pyttsx3.init()
 
-response=['Welcome to smart calculator','My name is MONTY',
-          'Thanks for enjoy with me ','Sorry ,this is  beyond my ability']
+response=['WCal','My name is Alfred',
+          'Thanks for using this ','Sorry ,this is  beyond my ability']
 
 r = sr.Recognizer()
 
@@ -23,23 +23,7 @@ def voicetospeech():
     except sr.RequestError as e:
         print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
-'''
-    r = sr.Recognizer()
-    with sr.Microphone() as source:
-        print("Say something!")
-        audio = r.listen(source)
 
-    words = r.recognize_sphinx(audio)
-    try:
-        print("Sphinx thinks you said " + r.recognize_sphinx(audio))
-        return words
-    except sr.UnknownValueError:
-        print("Sphinx could not understand audio")
-        return -1
-    except sr.RequestError as e:
-        print("Sphinx error; {0}".format(e))
-        return -1
-'''
 
 def extract(text):
     l=[]
@@ -124,22 +108,23 @@ def listToString(s):
     return str1
 
 
-
 operations={'ADD':add,'PLUS':add,'SUM':add,'ADDITION':add,
             'SUB':sub,'SUBTRACT':sub, 'MINUS':sub,
             'DIFFERENCE':sub,'LCM':lcm,'HCF':hcf,
             'PRODUCT':mul, 'MULTIPLY':mul,'MULTIPLICATION':mul,
             'DIVISION':div,'MOD':mod,'REMANDER'
-            :mod,'MODULAS':mod}
+            :mod,'MODULAS':mod, '+': add, '-':sub}
 
 commands={'NAME':myname,'EXIT':end,'END':end,'CLOSE':end}
 
 
-
-print("Welcome to this basic calculator, we can do simple calculations as of \
-this version")
-
-print("Say something (related to a calculation obviously)")
+print("Welcome to this basic calculator")
+beg = "Welcome to this basic calculator"
+engine.say(beg)
+engine.runAndWait()
+print("Ask what you wish to calculate")
+engine.say("Ask what you wish to calculate")
+engine.runAndWait()
 speech = voicetospeech()
 while(speech == -1):
     speech = voicetospeech()
@@ -153,16 +138,17 @@ tex = listToString(speech)
 text = extract(speech)
 
 for x in text:
-    if(x == '+'):
-        x = 'plus'
-
     if x.upper() in operations.keys():
         l = extractfloat(tex)
         print(l)
         r = operations[x.upper()] (l[0],l[1])
         print(r)
+        engine.say("Your answer is ", str(r))
+        engine.runAndWait()
         engine.say(str(r))
         engine.runAndWait()
         break
+    elif x.upper() in commands.keys():
+        commands[x.upper()] ()
     else:
         sorry()
